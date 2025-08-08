@@ -2,7 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hikari",
   "main": "src/index.ts",
-  "compatibility_date": "2025-08-08"
+  "compatibility_date": "2025-08-08",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hikari-url",
+      "database_id": "c692ccf2-ae1b-4ae1-9eee-061505bd370e"
+    }
+  ]
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
