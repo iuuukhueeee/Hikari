@@ -16,4 +16,16 @@ model User {
   id          Int    @id @default(autoincrement())
   email       String @unique
   displayName String
+  // url         Url[]
+}
+
+model Url {
+  id          Int      @id @default(autoincrement())
+  originalUrl String   @unique
+  shortUrl    String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  // userId      Int
+  // user        User     @relation(fields: [userId], references: [id])
 }
