@@ -21,7 +21,7 @@ model User {
 
 model Url {
   id          Int      @id @default(autoincrement())
-  originalUrl String   @unique
+  originalUrl String
   shortUrl    String   @unique
   description String?
   createdAt   DateTime @default(now())
