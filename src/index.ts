@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import prismaClients from './lib/prisma'
-import generateSha256Hash from './lib/generateSha256Hash'
+import generateUUID from './lib/generateUUID'
 
 type Bindings = {
   DB: D1Database
@@ -26,7 +26,7 @@ app.post('/', async (c) => {
   const url = await prisma.url.create({
     data: {
       originalUrl: originalUrl,
-      shortUrl: shortUrl ?? generateSha256Hash(originalUrl),
+      shortUrl: shortUrl ?? generateUUID(),
       description: description ?? null,
     },
   })
