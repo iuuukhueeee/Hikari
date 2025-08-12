@@ -23,12 +23,14 @@ app.get('/redirect', (c) => {
 app.get('/', async (c) => {
   const prisma = await prismaClients.fetch(c.env.DB)
   const originalUrl = c.req.query('url')
+  const uuid = generateUUID()
 
   if (originalUrl) {
     const url = await prisma.url.create({
       data: {
         originalUrl: originalUrl,
-        shortUrl: generateUUID(),
+        shortUrl: uuid,
+        displayUrl: `https://hikari.nguyenducthien9.workers.dev/${uuid}`,
         description: null
       }
     })
@@ -44,9 +46,9 @@ app.post('/', async (c) => {
   const prisma = await prismaClients.fetch(c.env.DB)
   const { originalUrl, shortUrl, description } = await c.req.json()
 
-  const isExist = await prisma.url.findUnique({
+  const isExist = shortUrl && await prisma.url.findUnique({
     where: {
-      shortUrl
+      shortUrl: shortUrl
     }
   })
 
@@ -54,11 +56,14 @@ app.post('/', async (c) => {
     throw new HTTPException(409, { message: 'Short URL already exists' })
   }
 
+  const uuid = generateUUID()
+
   const url = await prisma.url.create({
     data: {
       originalUrl: originalUrl,
-      shortUrl: shortUrl ?? generateUUID(),
+      shortUrl: shortUrl ?? uuid,
       description: description ?? null,
+      displayUrl: `https://hikari.nguyenducthien9.workers.dev/${shortUrl ?? uuid}`
     },
   })
 
