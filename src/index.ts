@@ -35,7 +35,7 @@ app.get('/', async (c) => {
       }
     })
 
-    return c.json(url)
+    return c.text(url.displayUrl)
 
   }
 
@@ -67,7 +67,7 @@ app.post('/', async (c) => {
     },
   })
 
-  return c.json(url)
+  return c.text(url.displayUrl)
 })
 
 app.get('/:url', async (c) => {
