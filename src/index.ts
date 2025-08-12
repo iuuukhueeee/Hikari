@@ -24,8 +24,6 @@ app.get('/', async (c) => {
   const prisma = await prismaClients.fetch(c.env.DB)
   const originalUrl = c.req.query('url')
 
-  console.log(originalUrl)
-
   if (originalUrl) {
     const url = await prisma.url.create({
       data: {
@@ -45,6 +43,16 @@ app.get('/', async (c) => {
 app.post('/', async (c) => {
   const prisma = await prismaClients.fetch(c.env.DB)
   const { originalUrl, shortUrl, description } = await c.req.json()
+
+  const isExist = await prisma.url.findUnique({
+    where: {
+      shortUrl
+    }
+  })
+
+  if (isExist) {
+    throw new HTTPException(409, { message: 'Short URL already exists' })
+  }
 
   const url = await prisma.url.create({
     data: {
