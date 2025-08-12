@@ -24,6 +24,12 @@ npm install
 npx wrangler d1 migrations apply your-db --local
 ```
 
+### 3. Generate Prisma types
+
+```sh
+npx prisma generate
+```
+
 ### 3. Run the development server
 
 ```sh
