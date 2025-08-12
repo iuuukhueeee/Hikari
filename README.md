@@ -56,6 +56,17 @@ To shorten a URL, send a GET request to the root endpoint with the `url` query p
 GET /?url=https://example.com
 ```
 
+Or even faster with shell function
+```bash
+hikari() {
+  curl -s https://hikari.nguyenducthien9.workers.dev/ \
+    -H "Content-Type: application/json" \
+    -d "{\"originalUrl\": \"$1\"}"
+}
+
+hikari https://www.example.com
+```
+
 ## Example Response
 
 ```json
