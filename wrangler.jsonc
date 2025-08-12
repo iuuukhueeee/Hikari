@@ -7,7 +7,7 @@
     {
       "binding": "DB",
       "database_name": "hikari-url",
-      "database_id": "c692ccf2-ae1b-4ae1-9eee-061505bd370e"
+      "database_id": "de917137-8dcd-48bc-bc9a-95006abc20d3"
     }
   ],
   "compatibility_flags": ["nodejs_compat"]
