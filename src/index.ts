@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import prismaClients from './lib/prisma'
 import generateUUID from './lib/generateUUID'
 import { HTTPException } from 'hono/http-exception'
+import formatUrl from './lib/formatUrl'
 
 type Bindings = {
   DB: D1Database
@@ -26,17 +27,18 @@ app.get('/', async (c) => {
   const uuid = generateUUID()
 
   if (originalUrl) {
+    const formatedUrl = formatUrl(originalUrl)
+
     const url = await prisma.url.create({
       data: {
-        originalUrl: originalUrl,
+        originalUrl: formatedUrl,
         shortUrl: uuid,
         displayUrl: `https://hikari.nguyenducthien9.workers.dev/${uuid}`,
-        description: null
-      }
+        description: null,
+      },
     })
 
     return c.text(url.displayUrl)
-
   }
 
   throw new HTTPException(400, { message: 'url parameter is required' })
@@ -45,29 +47,35 @@ app.get('/', async (c) => {
 app.post('/', async (c) => {
   const prisma = await prismaClients.fetch(c.env.DB)
   const { originalUrl, shortUrl, description } = await c.req.json()
-
-  const isExist = shortUrl && await prisma.url.findUnique({
-    where: {
-      shortUrl: shortUrl
-    }
-  })
-
-  if (isExist) {
-    throw new HTTPException(409, { message: 'Short URL already exists' })
-  }
-
   const uuid = generateUUID()
 
-  const url = await prisma.url.create({
-    data: {
-      originalUrl: originalUrl,
-      shortUrl: shortUrl ?? uuid,
-      description: description ?? null,
-      displayUrl: `https://hikari.nguyenducthien9.workers.dev/${shortUrl ?? uuid}`
-    },
-  })
+  if (originalUrl) {
+    const formatedUrl = formatUrl(originalUrl)
 
-  return c.text(url.displayUrl)
+    const isExist =
+      shortUrl &&
+      (await prisma.url.findUnique({
+        where: {
+          shortUrl: shortUrl,
+        },
+      }))
+
+    if (isExist) {
+      throw new HTTPException(409, { message: 'Short URL already exists' })
+    }
+
+    const url = await prisma.url.create({
+      data: {
+        originalUrl: formatedUrl,
+        shortUrl: shortUrl ?? uuid,
+        description: description ?? null,
+        displayUrl: `https://hikari.nguyenducthien9.workers.dev/${shortUrl ?? uuid}`,
+      },
+    })
+
+    return c.text(url.displayUrl)
+  }
+  throw new HTTPException(400, { message: 'url parameter is required' })
 })
 
 app.get('/:url', async (c) => {
